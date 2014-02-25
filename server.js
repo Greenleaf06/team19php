@@ -5,7 +5,7 @@ var http    =   require('http'),
     path    =   require('path'),
     io      =   require('socket.io');
 
-var pv = 10;
+var pv = 50;
 
 var HTTP_OK = 200,
     HTTP_ERR_UNKNOWN = 500,
@@ -34,7 +34,7 @@ var app = http.createServer(function (req, res) {
             res.end();
         }
     });
-}).listen(8080);
+}).listen(1337);
 
 function contentType(ext) {
     var ct;
@@ -80,15 +80,90 @@ function contentType(ext) {
 //IO listen to node app
 io = io.listen(app);
 
+// fonction timer
+var timerSong;
+
+var pv = 50;
+
+
+// liste des utilisateur et rooms
+var usernames = new Array();
+var rooms = new Array();
+
+// info musique
+var numTrack;
+var listMusiqueUrl = "";
+var listMusiqueTitle = "";
+var listMusiqueArtist = "";
+var listMusiqueCover = "";
+
+// compteur
+var numRoom = 1;
+var numUser = 1;
+
 io.sockets.on('connection', function (socket) {
+  
   socket.emit('hello', pv);
-  console.log(socket);
+  //console.log(socket);
   socket.on('login',function(user){
-  	console.log(user);
+  	//console.log(user);
   	usernames.push(user.username);
   	socket.broadcast.emit('newLog',user.username);
   })
   
+    // Ajout à la room 'accueil' et affichage des rooms existante
+    socket.join('accueil');
+    socket.emit('afficherLesRoomsExistante', rooms)
+
+    // Création de la room (STRING, INT, INT)
+    socket.on('ajouterRoom', function (nomPartie, nbrJoueur, nbrChanson){
+        console.log('/////////////////////////////////');
+        console.log('///// Une partie à été crée /////');
+        console.log('/////////////////////////////////');
+        var newRoom = {id: numRoom, nom: nomPartie, nbrJoueur: nbrJoueur, nbrChanson: nbrChanson, listeMusique: [], play: false, buzz: true};
+        socket.room = numRoom;
+        socket.numRoom = numRoom;
+        rooms[socket.numRoom] = newRoom;
+        socket.join(socket.room);
+
+        /* Envoi des emails aux personnes */
+        socket.emit('roomAjoute', { idRoom : socket.numRoom});
+        socket.broadcast.to('accueil').emit('afficherLesRoomsExistante', rooms);
+        numRoom++;
+    });
+
+    // Rejoindre une room (INT, STRING)
+    socket.on('rejoindreRoom', function(room, nom){
+        if (rooms[room] != null) {
+            var nbrPlayerPartie = 0;
+            for (k in usernames) {
+                    if (usernames[k].room == rooms[room].id) {
+                            nbrPlayerPartie++;
+                    }
+            }
+            if (nbrPlayerPartie < rooms[room].nbrJoueur) {
+                socket.join(room);
+                socket.room = room;
+                socket.numUser = numUser;
+                usernames[socket.numUser] = {
+                    id : numUser,
+                    user : nom,
+                    point : 0,
+                    room : rooms[room].id
+                };
+                socket.emit('roomRejoin');
+                socket.broadcast.to(socket.room).emit('refreshScrore');
+                numUser++;
+            }else{
+                    socket.emit('message', 'La partie est pleine');
+                    socket.emit('accueilLocation');
+            }
+        }else{
+                socket.emit('message', 'cette room n\'existe pas');
+                socket.emit('accueilLocation');
+        }
+    });
+
   socket.on("hit", function(){
   	  if(pv == 0)
   	{
@@ -101,7 +176,48 @@ io.sockets.on('connection', function (socket) {
       
       io.sockets.emit('newLife', pv);
   });
+  socket.on("hit2", function(){
+      if(pv == 0)
+    {
+      io.sockets.emit('ended',200);
+    }
+    {
+      pv = pv - 2;
+    }
+      
+      
+      io.sockets.emit('newLife', pv);
+  });
+  socket.on("hit3", function(){
+      if(pv == 0)
+    {
+      io.sockets.emit('ended',200);
+    }
+      else
+        if(pv == 20)
+    {
+      pv = pv - 20;
+    }
+      
+      
+      io.sockets.emit('newLife', pv);
+  });
+  socket.on("hit4", function(){
+      if(pv == 0)
+    {
+      io.sockets.emit('ended',200);
+    }
+    {
+      pv = pv - 50;
+    }
+      
+      
+      io.sockets.emit('newLife', pv);
+  });
+
+
 });
+
 /*
 function pop (){
 
