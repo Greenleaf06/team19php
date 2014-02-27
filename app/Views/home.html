@@ -1,0 +1,25 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<H1>HOME</H1>
+
+	 <p>tu es connecté en tant que 
+<?php 
+
+
+    echo ($SESSION['nickname']);
+ 
+    
+ ?> 
+</p>
+
+<form action="signout/">
+	<input type="submit" value="Log off"/>
+</form>
+
+</body>
+</html>
