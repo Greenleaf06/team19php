@@ -7,15 +7,29 @@
 <body>
 	<H1>HOME</H1>
 
-	 <p>tu es connecté en tant que 
+	
 <?php 
 
 
-    echo ($SESSION['nickname']);
+    echo ('tu es connecté en tant que '.$SESSION['nickname']." et tu es level ".$SESSION['lvl']);
  
     
  ?> 
-</p>
+
+<h2> SCORE </h2>
+
+<ul>
+ <?php
+ if(isset($top)):
+  foreach ($top as $player):
+ ?>
+  <li><a href="users/<?= $player->id ?>"><?= $player->pseudo . ' / score : ' . $player->level ?></a>
+ <?php
+  endforeach;
+ endif;
+ ?>
+ </ul>
+
 
 <form action="signout/">
 	<input type="submit" value="Log off"/>

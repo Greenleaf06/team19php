@@ -30,6 +30,7 @@ class user_model extends model{
 
 
     $connect->save();
+    return $connect;
   }
 
   function toto($f3, $params) {
@@ -37,6 +38,12 @@ class user_model extends model{
       $connect->load('login="'.$params['login'].'"');
       $connect->pseudo = $params['nicknameinsc'];
       $connect->save();
+  }
+
+    function top() {
+    $connect=$this->mapper;
+    return $connect->find(NULL, array('order' => 'level DESC', 'limit' => 10));
+    //return $connect;
   }
 
 }

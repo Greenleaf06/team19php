@@ -6,8 +6,8 @@ protected $model;
 
   public function __construct(){
     $f3=\Base::instance();
-    if($f3->get('PATTERN')!='/signin'&&!$f3->get('SESSION.id')){
-      //$f3->reroute('/signin');
+    if($f3->get('PATTERN')!='/signin'&&$f3->get('PATTERN')!='/send'&&!$f3->get('SESSION')&&$f3->get('PATTERN')!='/sendfb'){
+      $f3->reroute('/signin');
     }
   }
 
