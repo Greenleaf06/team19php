@@ -4,10 +4,10 @@ socket.on('connect', function () {
 	// Boutton "Commencer la partie"
   $('#Boss1').on('click', function(e){
     e.preventDefault();
-    room.params.nomPartie = $("#reglages input[name=nomPartie]").val();
-    room.params.nbrJoueur = parseInt($("#choisirNbrJoueur").data("nbrjoueur"));
+    room.params.nomPartie = $("#Boss1").val();
+    room.params.nbrJoueur = 5;
     room.params.nbrChanson = parseInt($("#reglages #amount2").val());
-
+    room.afficherRoom();
     room.creerRoom();
   });
 
@@ -88,7 +88,20 @@ socket.on('connect', function () {
 
 
 });
+  // Detection d'url pour rejoindre une room
+  if (typeof window.location.search != '' && window.location.search != ''){
+    var getRoom = window.location.search.split('=');
+    getRoom[1] = parseInt(getRoom[1]);
 
+    if(!isNaN(getRoom[1]) && getRoom[1]!=''){
+      room.rejoindreRoom(getRoom[1]);
+    }
+  }else{
+    formulaire.afficherFomulaire();
+  }
+
+
+});
 
 // Afficher un message
 socket.on('message', function (message) {
@@ -124,7 +137,9 @@ socket.on('afficherJoueur', function (usernames, rooms, monId) {
 })
 
 
-
+socket.on('fin', function() {
+  room.roomFin();
+}),
 // Refresh des score
 // demande au server d'envoyer à l'utilisateur les infos joueurs de la room
 socket.on('refreshScrore', function () {
@@ -138,6 +153,65 @@ socket.on('accueilLocation', function () {
   document.location.href="/"; 
 });
 
-});
 
 
+(function($){
+
+  var life;
+    
+        $('#hit').on('click',function(e){
+                e.preventDefault();
+                socket.emit('hit');
+        });
+      $('#hit2').on('click',function(e){
+                e.preventDefault();
+                socket.emit('hit2');
+        });
+         $('#hit3').on('click',function(e){
+                e.preventDefault();
+                socket.emit('hit3');
+        });
+         $('#hit4').on('click',function(e){
+                e.preventDefault();
+                socket.emit('hit4');
+        });
+
+         $('#Boss1').on('click', function(e){
+            socket.emit('join room', 'Boss1');
+         });
+         $('#Boss2').on('click', function(e){
+            socket.emit('join room', 'Boss2');
+         });
+        /*
+
+
+        socket.on('hello',function(pv){
+                alert(pv);
+        });
+
+        socket.on('newLife',function(pv){
+                alert(pv);
+        });
+    */
+    socket.on('room joined', function(){
+      alert("T'as join asazzaezaeazeazeaz");
+    });
+    socket.on('hello',function(pv){
+                $('#pv').html(pv);
+        });
+    socket.on('newLife',function(pv){
+                $('#pv').html(pv);
+        });
+    socket.on('ended',function(message){
+                this.disconnect();
+        });
+        
+    socket.on('newLog',function(username){
+                $("#logins").html("New login of " + username);
+        });
+
+        socket.emit('login', {
+          username : $('#username').text(),
+          level : $('#level').text()
+        });
+})(jQuery);

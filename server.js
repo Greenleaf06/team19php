@@ -85,10 +85,12 @@ var timerSong;
 
 var pv = 50;
 
-
 // liste des utilisateur et rooms
 var usernames = new Array();
 var rooms = new Array();
+
+//Points de vie des boss associés aux instances crées
+var boss = new Array ();
 
 // info musique
 var numTrack;
@@ -103,7 +105,6 @@ var numUser = 1;
 
 io.sockets.on('connection', function (socket) {
   
-  socket.emit('hello', pv);
   //console.log(socket);
   socket.on('login',function(user){
   	//console.log(user);
@@ -113,17 +114,19 @@ io.sockets.on('connection', function (socket) {
   
     // Ajout à la room 'accueil' et affichage des rooms existante
     socket.join('accueil');
-    socket.emit('afficherLesRoomsExistante', rooms)
+    socket.emit('afficherLesRoomsExistante', rooms);
 
     // Création de la room (STRING, INT, INT)
     socket.on('ajouterRoom', function (nomPartie, nbrJoueur, nbrChanson){
         console.log('/////////////////////////////////');
         console.log('///// Une partie à été crée /////');
         console.log('/////////////////////////////////');
-        var newRoom = {id: numRoom, nom: nomPartie, nbrJoueur: nbrJoueur, nbrChanson: nbrChanson, listeMusique: [], play: false, buzz: true};
+        var newRoom = {id: numRoom, nom: nomPartie, nbrJoueur: nbrJoueur, pvBoss: 99, listeMusique: [], play: false, buzz: true};
         socket.room = numRoom;
         socket.numRoom = numRoom;
         rooms[socket.numRoom] = newRoom;
+        socket.emit('hello', rooms[socket.numRoom].pvBoss);
+        
         socket.join(socket.room);
 
         /* Envoi des emails aux personnes */
@@ -145,6 +148,7 @@ io.sockets.on('connection', function (socket) {
                 socket.join(room);
                 socket.room = room;
                 socket.numUser = numUser;
+
                 usernames[socket.numUser] = {
                     id : numUser,
                     user : nom,
@@ -152,6 +156,9 @@ io.sockets.on('connection', function (socket) {
                     room : rooms[room].id
                 };
                 socket.emit('roomRejoin');
+                console.log(rooms[socket.numRoom].pvBoss);
+                socket.emit('newLife', rooms[socket.numRoom].pvBoss);
+                
                 socket.broadcast.to(socket.room).emit('refreshScrore');
                 numUser++;
             }else{
@@ -165,54 +172,56 @@ io.sockets.on('connection', function (socket) {
     });
 
   socket.on("hit", function(){
-  	  if(pv == 0)
+  	  if(rooms[socket.numRoom].pvBoss <= 0)
   	{
-  		io.sockets.emit('ended',200);
+  		
+      io.sockets.emit('ended',200);
   	}
   	{
-  	  pv--;
+      console.log(rooms[socket.numRoom].pvBoss);
+  	  rooms[socket.numRoom].pvBoss--;
   	}
   	  
-      
-      io.sockets.emit('newLife', pv);
+      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
   });
   socket.on("hit2", function(){
-      if(pv == 0)
+      if( rooms[socket.numRoom].pvBoss <= 0)
     {
+      
       io.sockets.emit('ended',200);
     }
     {
-      pv = pv - 2;
+      rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 2;
     }
       
       
-      io.sockets.emit('newLife', pv);
+     io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
   });
   socket.on("hit3", function(){
-      if(pv == 0)
+      if(rooms[socket.numRoom].pvBoss <= 0)
     {
       io.sockets.emit('ended',200);
     }
       else
-        if(pv == 20)
+        if(rooms[socket.numRoom].pvBoss == 20)
     {
-      pv = pv - 20;
+      rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 20;
     }
       
       
-      io.sockets.emit('newLife', pv);
+      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
   });
   socket.on("hit4", function(){
-      if(pv == 0)
+      if(rooms[socket.numRoom].pvBoss <= 0)
     {
       io.sockets.emit('ended',200);
     }
     {
-      pv = pv - 50;
+     rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 50;
     }
       
       
-      io.sockets.emit('newLife', pv);
+      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
   });
 
 
