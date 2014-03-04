@@ -5,7 +5,6 @@ var http    =   require('http'),
     path    =   require('path'),
     io      =   require('socket.io');
 
-var pv = 50;
 
 var HTTP_OK = 200,
     HTTP_ERR_UNKNOWN = 500,
@@ -83,12 +82,12 @@ io = io.listen(app);
 // fonction timer
 var timerSong;
 
-var pv = 50;
-
 
 // liste des utilisateur et rooms
 var usernames = new Array();
 var rooms = new Array();
+
+
 
 // info musique
 var numTrack;
@@ -103,7 +102,6 @@ var numUser = 1;
 
 io.sockets.on('connection', function (socket) {
   
-  socket.emit('hello', pv);
   //console.log(socket);
   socket.on('login',function(user){
   	//console.log(user);
@@ -112,18 +110,20 @@ io.sockets.on('connection', function (socket) {
   })
   
     // Ajout à la room 'accueil' et affichage des rooms existante
-    socket.join('accueil');
-    socket.emit('afficherLesRoomsExistante', rooms)
+    socket.join("accueil");
+    socket.emit('afficherLesRoomsExistante', rooms);
 
     // Création de la room (STRING, INT, INT)
     socket.on('ajouterRoom', function (nomPartie, nbrJoueur, nbrChanson){
         console.log('/////////////////////////////////');
         console.log('///// Une partie à été crée /////');
         console.log('/////////////////////////////////');
-        var newRoom = {id: numRoom, nom: nomPartie, nbrJoueur: nbrJoueur, nbrChanson: nbrChanson, listeMusique: [], play: false, buzz: true};
+        var newRoom = {id: numRoom, nom: nomPartie, nbrJoueur: nbrJoueur, pvBoss: 99, listeMusique: [], play: false, buzz: true};
         socket.room = numRoom;
         socket.numRoom = numRoom;
         rooms[socket.numRoom] = newRoom;
+        socket.emit('hello', rooms[socket.numRoom].pvBoss);
+        
         socket.join(socket.room);
 
         /* Envoi des emails aux personnes */
@@ -151,6 +151,8 @@ io.sockets.on('connection', function (socket) {
                     point : 0,
                     room : rooms[room].id
                 };
+                console.log(rooms[room].pvBoss);
+                socket.emit('newLife', rooms[room].pvBoss);
                 socket.emit('roomRejoin');
                 socket.broadcast.to(socket.room).emit('refreshScrore');
                 numUser++;
@@ -164,62 +166,55 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
-  socket.on("hit", function(){
-  	  if(pv == 0)
+  socket.on('refreshScrore', function () {
+            socket.emit('afficherJoueur', usernames, socket.room, socket.numUser);
+    });
+// Deconnection
+    socket.on('disconnect', function () {
+            if (socket.numUser != undefined) {
+                    socket.join("accueil");
+                    delete usernames[socket.numUser];
+                    socket.numUser = undefined;
+                    socket.broadcast.to(socket.room).emit('refreshScrore');
+            }
+            if (socket.numRoom != undefined) {
+                console.log('/////////////////////////////////////');
+                console.log('///// Une partie à été terminée /////');
+                console.log('/////////////////////////////////////');
+                    socket.join("accueil");
+                    delete rooms[socket.numRoom];
+                    socket.numRoom = undefined;
+                    socket.broadcast.to(socket.room).emit('accueilLocation');
+                    io.sockets.to('accueil').emit('afficherLesRoomsExistante', rooms);
+            }
+            socket.emit("fin");
+    });
+  socket.on("Atk", function(titleAtk){
+  console.log(rooms[socket.room]);
+  	  if(rooms[socket.room].pvBoss <= 0)
   	{
-  		io.sockets.emit('ended',200);
+  		
+      io.sockets.emit('ended',200);
   	}
   	{
-  	  pv--;
-  	}
+      switch(titleAtk)
+      {
+        case "hit" : rooms[socket.room].pvBoss--; break;
+        case "hit2": rooms[socket.room].pvBoss = rooms[socket.room].pvBoss - 2; break;
+        case "hit3": if(rooms[socket.room].pvBoss == 20)
+                      {
+                        rooms[socket.room].pvBoss = rooms[socket.room].pvBoss - 20;
+                      };
+                      break;
+        case "hit4": rooms[socket.room].pvBoss = rooms[socket.room].pvBoss - 50; break;
+      }
   	  
-      
-      io.sockets.emit('newLife', pv);
+  	}
+  	io.sockets.to(socket.room).emit('newLife', rooms[socket.room].pvBoss);
+    socket.broadcast.to('accueil').emit('afficherLesRoomsExistante', rooms);
   });
-  socket.on("hit2", function(){
-      if(pv == 0)
-    {
-      io.sockets.emit('ended',200);
-    }
-    {
-      pv = pv - 2;
-    }
-      
-      
-      io.sockets.emit('newLife', pv);
-  });
-  socket.on("hit3", function(){
-      if(pv == 0)
-    {
-      io.sockets.emit('ended',200);
-    }
-      else
-        if(pv == 20)
-    {
-      pv = pv - 20;
-    }
-      
-      
-      io.sockets.emit('newLife', pv);
-  });
-  socket.on("hit4", function(){
-      if(pv == 0)
-    {
-      io.sockets.emit('ended',200);
-    }
-    {
-      pv = pv - 50;
-    }
-      
-      
-      io.sockets.emit('newLife', pv);
-  });
+
 
 
 });
 
-/*
-function pop (){
-
-	console.log('fin');
-}*/

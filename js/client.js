@@ -4,10 +4,10 @@ socket.on('connect', function () {
 	// Boutton "Commencer la partie"
   $('#Boss1').on('click', function(e){
     e.preventDefault();
-    room.params.nomPartie = $("#reglages input[name=nomPartie]").val();
-    room.params.nbrJoueur = parseInt($("#choisirNbrJoueur").data("nbrjoueur"));
+    room.params.nomPartie = $("#Boss1").val();
+    room.params.nbrJoueur = 5;
     room.params.nbrChanson = parseInt($("#reglages #amount2").val());
-
+    room.afficherRoom();
     room.creerRoom();
   });
 
@@ -31,7 +31,7 @@ socket.on('connect', function () {
       $(room.params.affichage).empty();
       for (i in room.rooms) {
         if (room.rooms[i] != null) {
-          $(room.params.affichage).append('<div><a href="./?room='+room.rooms[i].id+'">' + room.rooms[i].nom + '</a></div>');
+          $(room.params.affichage).append('<div><a href="./?room='+room.rooms[i].id+'" data-id="'+room.rooms[i].id+'" class="lol">' + room.rooms[i].nom + '</a></div>');
         }
       }
     },
@@ -86,8 +86,25 @@ socket.on('connect', function () {
       $('#accueil').remove();
     },
 
+    });
+// Detection d'url pour rejoindre une room
+  if (typeof window.location.search != '' && window.location.search != ''){
+    var getRoom = window.location.search.split('=');
+    getRoom[1] = parseInt(getRoom[1]);
+
+    if(!isNaN(getRoom[1]) && getRoom[1]!=''){
+      room.rejoindreRoom(getRoom[1]);
+      alert("GGGGGGGGGGGGGGGG");
+    }
+  }else{
+    alert("pas d'url");
+    //formulaire.afficherFomulaire();
+  }
+
+
 
 });
+
 
 
 // Afficher un message
@@ -124,7 +141,9 @@ socket.on('afficherJoueur', function (usernames, rooms, monId) {
 })
 
 
-
+socket.on('fin', function() {
+  room.roomFin();
+}),
 // Refresh des score
 // demande au server d'envoyer à l'utilisateur les infos joueurs de la room
 socket.on('refreshScrore', function () {
@@ -138,6 +157,60 @@ socket.on('accueilLocation', function () {
   document.location.href="/"; 
 });
 
-});
 
 
+(function($){
+
+  var life;
+
+
+  $("#rooms").on('click', 'a.lol', function(e){
+    e.preventDefault();
+    var id = $(this).data("id");
+    room.rejoindreRoom(id);
+      alert(id);
+      console.log(room.rooms[id]);
+      alert("T'as join asazzaezaeazeazeaz");
+    return false;
+  })
+    
+        $('.shot').on('click',function(e){
+                e.preventDefault();
+                var titleAtk=$(this).attr("id");
+                console.log(titleAtk);
+                socket.emit("Atk", titleAtk);
+        });
+      
+        /*
+
+
+        socket.on('hello',function(pv){
+                alert(pv);
+        });
+
+        socket.on('newLife',function(pv){
+                alert(pv);
+        });
+    */
+    socket.on('room joined', function(){
+      alert("T'as join asazzaezaeazeazeaz");
+    });
+    socket.on('hello',function(pv){
+                $('#pv').html(pv);
+        });
+    socket.on('newLife',function(pv){
+                $('#pv').html(pv);
+        });
+    socket.on('ended',function(message){
+                this.disconnect();
+        });
+        
+    socket.on('newLog',function(username){
+                $("#logins").html("New login of " + username);
+        });
+
+        socket.emit('login', {
+          username : $('#username').text(),
+          level : $('#level').text()
+        });
+})(jQuery);
