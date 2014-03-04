@@ -82,12 +82,21 @@ io = io.listen(app);
 // fonction timer
 var timerSong;
 
+<<<<<<< HEAD
+=======
+var pv = 50;
+>>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
 
 // liste des utilisateur et rooms
 var usernames = new Array();
 var rooms = new Array();
 
+<<<<<<< HEAD
 
+=======
+//Points de vie des boss associés aux instances crées
+var boss = new Array ();
+>>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
 
 // info musique
 var numTrack;
@@ -110,7 +119,11 @@ io.sockets.on('connection', function (socket) {
   })
   
     // Ajout à la room 'accueil' et affichage des rooms existante
+<<<<<<< HEAD
     socket.join("accueil");
+=======
+    socket.join('accueil');
+>>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
     socket.emit('afficherLesRoomsExistante', rooms);
 
     // Création de la room (STRING, INT, INT)
@@ -145,6 +158,7 @@ io.sockets.on('connection', function (socket) {
                 socket.join(room);
                 socket.room = room;
                 socket.numUser = numUser;
+
                 usernames[socket.numUser] = {
                     id : numUser,
                     user : nom,
@@ -154,6 +168,9 @@ io.sockets.on('connection', function (socket) {
                 console.log(rooms[room].pvBoss);
                 socket.emit('newLife', rooms[room].pvBoss);
                 socket.emit('roomRejoin');
+                console.log(rooms[socket.numRoom].pvBoss);
+                socket.emit('newLife', rooms[socket.numRoom].pvBoss);
+                
                 socket.broadcast.to(socket.room).emit('refreshScrore');
                 numUser++;
             }else{
@@ -166,6 +183,7 @@ io.sockets.on('connection', function (socket) {
         }
     });
 
+<<<<<<< HEAD
   socket.on('refreshScrore', function () {
             socket.emit('afficherJoueur', usernames, socket.room, socket.numUser);
     });
@@ -192,11 +210,16 @@ io.sockets.on('connection', function (socket) {
   socket.on("Atk", function(titleAtk){
   console.log(rooms[socket.room]);
   	  if(rooms[socket.room].pvBoss <= 0)
+=======
+  socket.on("hit", function(){
+  	  if(rooms[socket.numRoom].pvBoss <= 0)
+>>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
   	{
   		
       io.sockets.emit('ended',200);
   	}
   	{
+<<<<<<< HEAD
       switch(titleAtk)
       {
         case "hit" : rooms[socket.room].pvBoss--; break;
@@ -212,6 +235,52 @@ io.sockets.on('connection', function (socket) {
   	}
   	io.sockets.to(socket.room).emit('newLife', rooms[socket.room].pvBoss);
     socket.broadcast.to('accueil').emit('afficherLesRoomsExistante', rooms);
+=======
+      console.log(rooms[socket.numRoom].pvBoss);
+  	  rooms[socket.numRoom].pvBoss--;
+  	}
+  	  
+      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
+  });
+  socket.on("hit2", function(){
+      if( rooms[socket.numRoom].pvBoss <= 0)
+    {
+      
+      io.sockets.emit('ended',200);
+    }
+    {
+      rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 2;
+    }
+      
+      
+     io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
+  });
+  socket.on("hit3", function(){
+      if(rooms[socket.numRoom].pvBoss <= 0)
+    {
+      io.sockets.emit('ended',200);
+    }
+      else
+        if(rooms[socket.numRoom].pvBoss == 20)
+    {
+      rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 20;
+    }
+      
+      
+      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
+  });
+  socket.on("hit4", function(){
+      if(rooms[socket.numRoom].pvBoss <= 0)
+    {
+      io.sockets.emit('ended',200);
+    }
+    {
+     rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 50;
+    }
+      
+      
+      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
+>>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
   });
 
 

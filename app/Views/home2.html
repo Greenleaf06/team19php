@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Starblaster - The game</title>
+	<link rel="stylesheet" type="text/css" href="css/reset.css">
+	<link rel="stylesheet" type="text/css" href="css/fonts.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+</head>
+<body>
+	<header>
+		<div class="logo"></div>
+	</header>
+	<div class="homeContent clearfix">
+		<div id="left">
+			<h1>Principe</h1>
+			<div id="characters"></div>
+			<p>Bienvenue sur Starblaster. Un jeu en ligne ou vous incarnerez des héros légendaires luttant contre des sbires à tête de cul qui envahissent Starcity.</p>
+			<p>Rejoignez vos amis et formez une équipe à la hauteur de ces affreux monstres qui ne font que nuire a Starcity.</p>
+			<p>Bonne chance aventuriers et que la chance soit avec vous !</p>
+		</div>
+		<div id="right">
+			<div id="right1">
+				<h1>Connexion</h1>
+				<form action="signin/" method="post">
+					<div class="right-left">
+						<input type="text" placeholder="Nom d'utilisateur..." name="login">
+						<input type="password" placeholder="Mot de passe..." name="password">
+						<input type="submit" value="S'inscrire">
+						<a href="#">Mot de passe oublié ?</a>
+					</div>
+					<div class="right-right">
+						<input type="submit" name="submit" value="Facebook Connect">
+					</div>
+				</form>
+			</div>
+			<div id="right2">
+				<h1>Inscription</h1>
+				<form action="send/" method="post">
+					<div class="right-left">
+						<input type="email" placeholder="Adresse mail..." name="logininsc">
+						<input type="password" placeholder="Mot de passe..." name="passwordinsc">
+						<input type="password" placeholder="Confirmer mot de passe...">
+					</div>
+					<div class="right-right">
+						<input type="submit" name="submit" value="S'inscrire">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<footer></footer>
+</body>
+</html>
