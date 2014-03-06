@@ -43,7 +43,8 @@ class App_controller extends Controller
                     'id' => $f3->get('users')->id,
                     'login' => $f3->get('users')->login,
                     'nickname' => $f3->get('users')->pseudo,
-                    'lvl' => $f3->get('users')->level
+                    'lvl' => $f3->get('users')->level,
+                    'classe' => $f3->get('users')->classe
                 );
                 $f3->set('SESSION', $user);
                 if ($f3->get('SESSION.nickname') != '')
@@ -142,10 +143,24 @@ class App_controller extends Controller
         case 'POST':
             $f3->set('users', $model->toto($f3, array(
                 'nicknameinsc' => $f3->get('POST.nicknameinsc') ,
-                'login' => $f3->get('SESSION.login')
+                'login' => $f3->get('SESSION.login'),
+                'classe' => $f3->get('POST.radio')
             )));
-            $f3->set('SESSION.nickname', $f3->get('POST.nicknameinsc'));
-            $f3->reroute('/menu');
+            
+
+             $user = array(
+                'id' => $f3->get('users')->id,
+                'login' => $f3->get('users')->login,
+                'lvl' => $f3->get('users')->level,
+                'classe' => $f3->get('users')->classe,
+                'nickname' => $f3->get('users')->pseudo
+                
+            );
+
+            $f3->set('SESSION', $user);
+
+
+            $f3->reroute('/' . $f3->get('SESSION.nickname'));
             break;
         }
     }

@@ -29,6 +29,8 @@ class user_model extends model
     $connect = $this->mapper;
     $test = $connect->load('login="' . $params['logininsc'] . '"');
     $f3->set('toast', $test);
+   
+
     if ($test === false)
     {
       $connect->login = $params['logininsc'];
@@ -43,10 +45,32 @@ class user_model extends model
 
   function toto($f3, $params)
   {
+
+     $classe = $params['classe'];
+
+      switch ($classe) {
+
+        case 1 :
+        $classe = 'Ingenieur';
+        break;
+
+        case 2 :
+         $classe = 'Assassin';
+        break;
+
+        case 3 :
+         $classe = 'Assaut';
+        break;
+       } 
+
     $connect = $this->mapper;
     $connect->load('login="' . $params['login'] . '"');
     $connect->pseudo = $params['nicknameinsc'];
+    $connect->classe = $classe;
+
     $connect->save();
+
+    return $connect;
   }
 
   function top()
@@ -54,7 +78,7 @@ class user_model extends model
     $connect = $this->mapper;
     return $connect->find(NULL, array(
       'order' => 'level DESC',
-      'limit' => 10
+      'limit' => 9
     ));
 
     // return $connect;
