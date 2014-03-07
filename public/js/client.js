@@ -82,10 +82,7 @@ socket.on('connect', function () {
         },
 
 
-        // Utilisateur bien connecter à la room
-        roomAdded: function () {
-            $('#accueil').remove();
-        },
+        
 
 
     });
