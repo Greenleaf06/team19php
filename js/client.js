@@ -31,7 +31,7 @@ socket.on('connect', function () {
       $(room.params.affichage).empty();
       for (i in room.rooms) {
         if (room.rooms[i] != null) {
-          $(room.params.affichage).append('<div><a href="./?room='+room.rooms[i].id+'">' + room.rooms[i].nom + '</a></div>');
+          $(room.params.affichage).append('<div><a href="./?room='+room.rooms[i].id+'" data-id="'+room.rooms[i].id+'" class="lol">' + room.rooms[i].nom + '</a></div>');
         }
       }
     },
@@ -86,6 +86,22 @@ socket.on('connect', function () {
       $('#accueil').remove();
     },
 
+    });
+// Detection d'url pour rejoindre une room
+  if (typeof window.location.search != '' && window.location.search != ''){
+    var getRoom = window.location.search.split('=');
+    getRoom[1] = parseInt(getRoom[1]);
+
+    if(!isNaN(getRoom[1]) && getRoom[1]!=''){
+      room.rejoindreRoom(getRoom[1]);
+      alert("GGGGGGGGGGGGGGGG");
+    }
+  }else{
+    alert("pas d'url");
+    //formulaire.afficherFomulaire();
+  }
+
+
 
 });
   // Detection d'url pour rejoindre une room
@@ -102,6 +118,7 @@ socket.on('connect', function () {
 
 
 });
+
 
 // Afficher un message
 socket.on('message', function (message) {
@@ -158,6 +175,27 @@ socket.on('accueilLocation', function () {
 (function($){
 
   var life;
+<<<<<<< HEAD
+
+
+  $("#rooms").on('click', 'a.lol', function(e){
+    e.preventDefault();
+    var id = $(this).data("id");
+    room.rejoindreRoom(id);
+      alert(id);
+      console.log(room.rooms[id]);
+      alert("T'as join asazzaezaeazeazeaz");
+    return false;
+  })
+    
+        $('.shot').on('click',function(e){
+                e.preventDefault();
+                var titleAtk=$(this).attr("id");
+                console.log(titleAtk);
+                socket.emit("Atk", titleAtk);
+        });
+      
+=======
     
         $('#hit').on('click',function(e){
                 e.preventDefault();
@@ -182,6 +220,7 @@ socket.on('accueilLocation', function () {
          $('#Boss2').on('click', function(e){
             socket.emit('join room', 'Boss2');
          });
+>>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
         /*
 
 

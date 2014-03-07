@@ -9,30 +9,14 @@ a {text-decoration: none; color: #fff; font-size: 11px;}
 body{
 	background: url('../img/bg.jpg') no-repeat;
 	background-size: cover;
-	font-family: 'primeregular';
+	font-family: 'sansationbold';
 	font-size: 13px;
-	color: #fff;
-}
-
-body.body2 {
-	background: url('../img/bg2.jpg') no-repeat;
-	background-size: cover;
-}
-
-hgroup h2 {
-	margin-bottom: 5px;
-}
-
-hgroup h3 {
-	font-family: 'primelight';
-	font-style: italic;
 }
 
 header {
 	width: 100%;
 	height: 80px;
 	background: url('../img/header-bg.png') no-repeat;
-	background-size: cover;
 }
 
 .logo {
@@ -191,34 +175,11 @@ footer {
 	margin-bottom: 100px;
 }
 
-.user-infos .Assassin {
+.user-infos img {
 	float: left;
 	margin: 0 10px 10px 0;
-	border-top-left-radius: 10px;
-	border-bottom-right-radius: 10px;
-	background: url('../img/assassin.png') #1f4fa8 no-repeat;
-	width: 64px;
-	height: 64px;
-}
-
-.user-infos .Assaut {
-	float: left;
-	margin: 0 10px 10px 0;
-	border-top-left-radius: 10px;
-	border-bottom-right-radius: 10px;
-	background: url('../img/assaut.png') #1f4fa8 no-repeat;
-	width: 64px;
-	height: 64px;
-}
-
-.user-infos .Ingenieur {
-	float: left;
-	margin: 0 10px 10px 0;
-	border-top-left-radius: 10px;
-	border-bottom-right-radius: 10px;
-	background: url('../img/ingenieur.png') #1f4fa8 no-repeat;
-	width: 64px;
-	height: 64px;
+	border-top-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 .user-infos hgroup {
@@ -231,8 +192,8 @@ footer {
 	width: 57%;
 	height: 32px;
 	background-color: #132a43;
-	border-top-left-radius: 7px;
-	border-bottom-right-radius: 7px;
+	border-top-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 	padding: 2%;
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -242,12 +203,10 @@ footer {
 
 .fill {
 	background-color: #1f4fa8;
-	color: #fff;
-	font-size: 20px;
 	height: 100%;
 	width: 65%;
-	border-top-left-radius: 7px;
-	border-bottom-right-radius: 7px;
+	border-top-left-radius: 5px;
+	border-bottom-right-radius: 5px;
 }
 
 .friendlist {
@@ -260,42 +219,6 @@ footer {
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-}
-
-.friend-picture {
-	width: 48px;
-	height: 48px;
-	background-color: #fff;
-	float: left;
-	margin-right: 10px;
-}
-
-.friend {
-	margin-bottom: 10px;
-}
-
-.friend-name {
-	margin-bottom: 5px;
-}
-
-.buttons {
-	float: left;
-}
-
-.buttons ul li {
-	width: 24px;
-	height: 24px;
-	display: inline-block;
-	text-indent: -999999px;
-	margin-right: 5px;
-}
-
-.buttons ul li.message {
-	background: url('../img/chat-icon.png') #1f4fa8 no-repeat center center;
-}
-
-.buttons ul li.close {
-	background: url('../img/close-icon.png') #1f4fa8 no-repeat center center;
 }
 
 .center {
@@ -328,14 +251,9 @@ footer {
 	color: #fff;
 }
 
-.experience, .number, .character {
+.damages, .number, .character {
 	float: left;
 	margin-right: 20px;
-}
-
-.experience hgroup h3 {
-	font-family: 'primelight';
-	font-style: italic;
 }
 
 .number {
@@ -344,9 +262,6 @@ footer {
 	text-align: center;
 	line-height: 32px;
 	background-color: #132a43;
-	border-top-left-radius: 7px;
-	border-bottom-right-radius: 7px;
-
 }
 
 .boss {
@@ -371,68 +286,6 @@ footer {
 	height: 34px;
 }
 
-/* Fight-interface */
-.bossLife {
-	width: 100%;
-	height: 64px;
-	background-color: #132a43;
-	border-top-left-radius: 7px;
-	border-bottom-right-radius: 7px;
-	padding: 1%;
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-
-.bossName {
-	text-align: center;
-	color: #fff;
-	margin-top: 10px;
-}
-
-.spells {
-	height: 30px;
-	position: absolute;
-	bottom: 160px;
-	left: 50%;
-	margin-left: -70px;
-}
-
-.spells ul li {
-	display: inline-block;
-}
-
-.spells ul li.shot {
-	width: 64px;
-	height: 64px;
-	background-color: #fff;
-}
-
-.spells ul li#hit {
-	background: url('../img/hit.png') #1f4fa8 no-repeat center center;
-}
-
-.spells ul li#hit2 {
-	background: url('../img/hit2.png') no-repeat;
-}
-
-.bottomBar {
-	width: 100%;
-	height: 100px;
-	background: url('../img/bg-botbar.png') no-repeat;
-	background-size: cover;
-	position: absolute;
-	left: 0;
-	bottom: 37px;
-}
-
-.timer {
-	text-align: center;
-	margin-top: 45px;
-	font-size: 20px;
-	z-index: 99;
-}
-
 .charsContent {
 	width: 50%;
 	margin: 50px auto 0 auto;
@@ -442,13 +295,13 @@ footer {
 form#signin h2#chooseClass {
 	text-align: center;
 	font-size: 25px;
-	margin-bottom: 30px;
+	margin-bottom: 50px;
 }
 
 .ingChar, .assassinChar, .assautChar {
 	width: 32.6%;
 	height: 400px;
-	margin-right: 0.7%;
+	margin-right: 0.5%;
 	background: url('../img/bg-classes.png') no-repeat;
 	float: left;
 }
@@ -466,7 +319,7 @@ form#signin h2#chooseClass {
 }
 
 #assau{
-	background: url('../img/assaut-2.png') left bottom no-repeat;
+	background: url('../img/assaut.png') left bottom no-repeat;
 	height: 400px;
 	z-index: 20;
 }
@@ -489,7 +342,12 @@ form#signin h2#chooseClass {
 
 #chooseNick h2 {
 	font-size: 25px;
-	padding: 15px 0;
+	padding: 30px 0;
 	clear: both;
 }
+
+
+
+
+
 

@@ -15,63 +15,58 @@ class user_model extends model
   {
     $connect = $this->mapper;
     $test = $connect->load('login="' . $params['login'] . '" AND password="' . $params['password'] . '"');
-    if ($test === NULL)
-    {
+    if ($test === NULL) {
     }
-    else
-    {
+    else {
       return $test;
     }
   }
+
+  // Fonction inscription
 
   function send($f3, $params)
   {
     $connect = $this->mapper;
     $test = $connect->load('login="' . $params['logininsc'] . '"');
     $f3->set('toast', $test);
-   
-
-    if ($test === false)
-    {
+    if ($test === false) {
       $connect->login = $params['logininsc'];
       $connect->password = $params['passwordinsc'];
       $connect->save();
       return $connect;
     }
-    else
-    {
+    else {
     }
   }
 
+  // Fonction choix perso/pseudo
+
   function toto($f3, $params)
   {
+    $classe = $params['classe'];
+    switch ($classe) {
+    case 1:
+      $classe = 'Ingenieur';
+      break;
 
-     $classe = $params['classe'];
+    case 2:
+      $classe = 'Assassin';
+      break;
 
-      switch ($classe) {
-
-        case 1 :
-        $classe = 'Ingenieur';
-        break;
-
-        case 2 :
-         $classe = 'Assassin';
-        break;
-
-        case 3 :
-         $classe = 'Assaut';
-        break;
-       } 
+    case 3:
+      $classe = 'Assaut';
+      break;
+    }
 
     $connect = $this->mapper;
     $connect->load('login="' . $params['login'] . '"');
     $connect->pseudo = $params['nicknameinsc'];
     $connect->classe = $classe;
-
     $connect->save();
-
     return $connect;
   }
+
+  // Fonction récupérant le top 10 joueurs par niveau
 
   function top()
   {
@@ -85,6 +80,8 @@ class user_model extends model
 
   }
 
+  // Fonction Enregistrer via api Facebook
+
   function registerFacebook()
   {
     $connect = $this->mapper;
@@ -96,22 +93,14 @@ class user_model extends model
       'fileUpload' => false, // optional
       'allowSignedRequest' => false
 
-      // optional, but should be set to false for non-canvas apps
-
     );
     $facebook = new Facebook($config);
     $user_id = $facebook->getUser();
-    if ($user_id)
-    {
+    if ($user_id) {
 
-      // We have a user ID, so probably a logged in user.
-      // If not, we'll get an exception, which we handle below.
-
-      try
-      {
+      try {
         $test = $connect->load('login="' . $user_id . '"');
-        if ($test === false)
-        {
+        if ($test === false) {
           $user_profile = $facebook->api('/me', 'GET');
           $connect->login = $user_id;
           $connect->password = $user_profile['name'];
@@ -121,18 +110,11 @@ class user_model extends model
 
           return $connect;
         }
-        else
-        {
+        else {
         }
       }
 
-      catch(FacebookApiException $e)
-      {
-
-        // If the user is logged out, you can have a
-        // user ID even though the access token is invalid.
-        // In this case, we'll get an exception, so we'll
-        // just ask the user to login again here.
+      catch(FacebookApiException $e) {
 
         $login_url = $facebook->getLoginUrl();
         echo 'Please <a href="' . $login_url . '">login.</a>';
@@ -140,30 +122,20 @@ class user_model extends model
         error_log($e->getMessage());
       }
     }
-    else
-    {
-
-      // No user, print a link for the user to login
+    else {
 
       $login_url = $facebook->getLoginUrl();
       echo 'Please <a href="' . $login_url . '">login.</a>';
     }
   }
 
-  /*   function registeredFacebook() {
-  $connect=$this->mapper;
-  $pong = $f3->set('id_fb');
-  return $pong;
-  }*/
-  
+// Fonction pour l'api
 
-  function apiDB() 
+  function api()
   {
     $connect = $this->mapper;
     return $connect;
   }
-
 }
-
 
 ?>

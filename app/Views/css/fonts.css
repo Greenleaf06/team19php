@@ -1,0 +1,23 @@
+@font-face {
+    font-family: 'pirulenregular';
+    src: url('fonts/pirulen_rg-webfont.eot');
+    src: url('fonts/pirulen_rg-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/pirulen_rg-webfont.woff') format('woff'),
+         url('fonts/pirulen_rg-webfont.ttf') format('truetype'),
+         url('fonts/pirulen_rg-webfont.svg#pirulenregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'sansationbold';
+    src: url('fonts/sansation-bold-webfont.eot');
+    src: url('fonts/sansation-bold-webfont.eot?#iefix') format('embedded-opentype'),
+         url('fonts/sansation-bold-webfont.woff') format('woff'),
+         url('fonts/sansation-bold-webfont.ttf') format('truetype'),
+         url('fonts/sansation-bold-webfont.svg#sansationbold') format('svg');
+    font-weight: normal;
+    font-style: normal;
+
+}
+

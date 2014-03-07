@@ -1,29 +1,31 @@
 <?php
 class App_controller extends Controller
 
-{
+    {
     public
 
     function __construct($f3)
-    {
+        {
         parent::__construct();
-    }
+        }
 
     public
 
     function home($f3)
-    {
+        {
         $f3->reroute('/signin');
-    }
+        }
 
     public
 
+    // Fonction pour s'identifier 
+
     function signin($f3)
-    {
+        {
         $model = new user_model();
         echo View::instance()->render('signin.html');
         switch ($f3->get('VERB'))
-        {
+            {
         case 'GET':
             $this->tpl['sync'] = 'signin.html';
             break;
@@ -34,11 +36,11 @@ class App_controller extends Controller
                 'password' => $f3->get('POST.password')
             )));
             if (!$f3->get('users'))
-            {
+                {
                 $f3->reroute('/signin');
-            }
-            else
-            {
+                }
+              else
+                {
                 $user = array(
                     'id' => $f3->get('users')->id,
                     'login' => $f3->get('users')->login,
@@ -48,41 +50,43 @@ class App_controller extends Controller
                 );
                 $f3->set('SESSION', $user);
                 if ($f3->get('SESSION.nickname') != '')
-                {
+                    {
                     $f3->reroute('/' . $f3->get('SESSION.nickname'));
-                }
-                else
-                {
+                    }
+                  else
+                    {
                     $f3->reroute('/nickname');
+                    }
                 }
-            }
 
             break;
+            }
         }
-    }
 
     public
 
+    // Fonction pour s'enregistrer
+
     function register($f3)
-    {
+        {
         $model = new user_model();
         switch ($f3->get('VERB'))
-        {
+            {
         case 'POST':
             $f3->set('register', $model->send($f3, array(
                 'logininsc' => $f3->get('POST.logininsc') ,
                 'passwordinsc' => $f3->get('POST.passwordinsc')
             )));
             if (!$f3->get('register'))
-            {
+                {
 
                 // $f3->reroute('/signin');
 
                 $this->tpl['sync'] = 'signin.html';
                 echo ("erreur");
-            }
-            else
-            {
+                }
+              else
+                {
                 $user = array(
                     'id' => $f3->get('register')->id,
                     'login' => $f3->get('register')->login,
@@ -91,18 +95,20 @@ class App_controller extends Controller
                 $f3->set('SESSION', $user);
                 $f3->reroute('/nickname');
                 break;
+                }
             }
         }
-    }
 
     public
 
+    // Fonction pour s'enregistrer via l'api Facebook
+
     function Fbregister($f3)
-    {
+        {
         $model = new user_model();
         $f3->set('fbregister', $model->registerFacebook($f3));
         if (!$f3->get('fbregister'))
-        {
+            {
             echo ("error");
             /*
             if (!$f3->get('SESSION')) {
@@ -116,9 +122,9 @@ class App_controller extends Controller
             $f3->set('SESSION', $user);
             $f3->reroute('/menu');
             } */
-        }
-        else
-        {
+            }
+          else
+            {
             $user = array(
                 'id' => $f3->get('fbregister')->id,
                 'login' => $f3->get('fbregister')->login,
@@ -126,16 +132,18 @@ class App_controller extends Controller
             );
             $f3->set('SESSION', $user);
             $f3->reroute('/nickname');
+            }
         }
-    }
 
     public
 
+    // Fonction pour enregistrer un pseudo et une classe
+
     function getnickname($f3)
-    {
+        {
         $model = new user_model();
         switch ($f3->get('VERB'))
-        {
+            {
         case 'GET':
             echo View::instance()->render('nickname.html');
             break;
@@ -143,32 +151,28 @@ class App_controller extends Controller
         case 'POST':
             $f3->set('users', $model->toto($f3, array(
                 'nicknameinsc' => $f3->get('POST.nicknameinsc') ,
-                'login' => $f3->get('SESSION.login'),
+                'login' => $f3->get('SESSION.login') ,
                 'classe' => $f3->get('POST.radio')
             )));
-            
-
-             $user = array(
+            $user = array(
                 'id' => $f3->get('users')->id,
                 'login' => $f3->get('users')->login,
                 'lvl' => $f3->get('users')->level,
                 'classe' => $f3->get('users')->classe,
                 'nickname' => $f3->get('users')->pseudo
-                
             );
-
             $f3->set('SESSION', $user);
-
-
             $f3->reroute('/' . $f3->get('SESSION.nickname'));
             break;
+            }
         }
-    }
 
     public
 
+    // Affichage de la home + tope 10 joueurs
+
     function menu($f3)
-    {
+        {
         $model = new user_model();
         /* $top =     $f3->get('users', $model->top($f3, array(
         'pseudo' => $f3->get('pseudo'),
@@ -179,17 +183,26 @@ class App_controller extends Controller
         $top = $model->top($f3);
         $f3->set('top', $top);
         echo View::instance()->render('home.html');
-    }
+        }
 
     public
 
+    // Disconnect
+
     function signout($f3)
-    {
+        {
         session_destroy();
         $f3->reroute('/signin');
+        }
+
+    public
+
+    // API
+
+    function api($f3)
+        {
+        echo View::instance()->render('api.html');
+        }
     }
-}
-
-
 
 ?>

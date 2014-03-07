@@ -32,7 +32,6 @@
 
 		<div class="center">
 			<?php
-$x=0;
  if(isset($top)):
  	foreach ($top as $player):
  		?>
@@ -47,7 +46,7 @@ $x=0;
 				<div class="number">1</div>
 				<div class="character">
 					<hgroup>
-						<h2><?php echo($player->pseudo); /*echo ($f3->get('nametop.nametop1'))*/ ?></h2>
+						<h2><?php echo($player->pseudo); ?></h2>
 						<h3><?php echo($player->classe); ?> lvl.<?php echo($player->level); ?></h3>
 					</hgroup>
 				</div>

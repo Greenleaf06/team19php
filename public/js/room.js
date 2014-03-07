@@ -40,11 +40,7 @@ var room = {
   // Connection à une room (INT)
   // appelle la fonction pour se connecter à la room
   rejoindreRoom : function (room){
-<<<<<<< HEAD
     socket.emit('rejoindreRoom', room, 'lol');
-=======
-    connect(room);
->>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
   },
 
 
@@ -55,23 +51,20 @@ var room = {
   },
 
   afficherRoom : function() {
-    $('#acceuil').hide();
+    $('#accueil').hide();
     $('#fightBoss').show();
     console.log('test');
   },
-<<<<<<< HEAD
 
   roomRejoint : function () {
-     $('#acceuil').hide();
+     $('#accueil').hide();
     $('#fightBoss').show();
     console.log('test');
   },
 
-=======
->>>>>>> d6d33b7251bbcb72b4a0e442917f5f8166cd0dbb
    
    roomFin : function() {
-    $('#acceuil').show();
+    $('#accueil').show();
     $('#fightBoss').hide();
     console.log('test222222');
   },

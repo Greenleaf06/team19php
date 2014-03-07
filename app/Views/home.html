@@ -4,8 +4,9 @@
 	<meta charset="UTF-8">
 	<title>Starblaster - The game</title>
 	<link rel="stylesheet" type="text/css" href="public/css/reset.css">
-  <link rel="stylesheet" type="text/css" href="public/css/fonts.css">
-  <link rel="stylesheet" type="text/css" href="public/css/style.css">
+	<link rel="stylesheet" type="text/css" href="public/css/fonts.css">
+	<link rel="stylesheet" type="text/css" href="public/css/style.css">
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.11.0.js"></script>
 </head>
 <body>
 	<header>
@@ -15,17 +16,17 @@
 		<aside class="left-sidebar">
 			<div class="user-infos">
 				<div class=<?php echo $SESSION['classe'] ; ?>></div>
-
+				<div class="user-ppicture"></div>
 				<hgroup>
-					<h2><?php echo $SESSION['nickname']; ?></h2>
-					<h3><?php echo $SESSION['classe']; ?> lvl.<?php echo $SESSION['lvl']; ?></h3>
+					<h2 id="username"><?php echo $SESSION['nickname']; ?></h2>
+					<h3><?php echo $SESSION['classe']; ?> lvl.<span  id="level"><?php echo $SESSION['lvl']; ?></span></h3>
 				</hgroup>	
 				<div class="expPB">
 					<div class="fill"></div>
 				</div>
-				<form action="signout/">
-	<input type="submit" value="Log off"/>
-</form>
+						<form action="signout/">
+				<input type="submit" value="Log off"/>
+			</form>
 			</div>
 			<div class="friendlist">
 				<div class="friend clearfix">
@@ -84,9 +85,10 @@
 				</div>
 			</div>
 		</aside>
-
+				
 		<div class="center">
-			<?php
+			<div id="accueil">
+				<?php
  if(isset($top)):
  	foreach ($top as $player):
  		?>
@@ -103,20 +105,40 @@
 						<h2><?php echo($player->pseudo); ?></h2>
 						<h3><?php echo($player->classe); ?> lvl.<?php echo($player->level); ?></h3>
 					</hgroup>
+								</div>
+							</div>
+				<?php
+				endforeach;
+				 endif;
+
+					?>
+			</div>
+
+			<div id="fightBoss" style="display:none;">
+				<div class="bossLife"> 
+					<div class="fill"><div id="pv"></div></div>
+				</div>
+				<h1 class="bossName">Aranka</h1>
+				
+				<div class="spells">
+					<ul>
+						<li class="shot" id="hit"></li>
+						<li class="shot" id="hit2"></li>
+					</ul>
+				</div>
+				<div class="bottomBar">
+					<div class="timer"><p>Temps restant : 1.37</p></div>
 				</div>
 			</div>
-<?php
-endforeach;
- endif;
 
-?>
-			
+		</disv>
+
 		</div>
 
 		<aside class="right-sidebar clearfix">
 			<h2>Affrontements en cours :</h2>
 			<div class="boss">
-				<div class="fill"></div>
+				<div class="fill"><div id="rooms"></div></div>
 			</div>
 			<div class="boss">
 				<div class="fill"></div>
@@ -128,10 +150,15 @@ endforeach;
 				<div class="fill"></div>
 			</div>
 
-			<input type="submit" value="Lancer un combat" class="startFight">
+			<input type="submit" value="Lancer un combat" class="startFight" id="Boss1">
 
 		</aside>
 	</div>
 	<footer></footer>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+	<script src="http://localhost:1337/socket.io/socket.io.js"></script>
+	<script src="public/js/room.js"></script>
+	<script src="public/js/client.js"></script>
 </body>
 </html>
+

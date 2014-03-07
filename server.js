@@ -5,7 +5,6 @@ var http    =   require('http'),
     path    =   require('path'),
     io      =   require('socket.io');
 
-var pv = 50;
 
 var HTTP_OK = 200,
     HTTP_ERR_UNKNOWN = 500,
@@ -16,7 +15,7 @@ var usernames = [];
 
 /************** NODE SERVER ****************/
 var app = http.createServer(function (req, res) {
-    var filepath = (req.url == '/' ? "index.html" : req.url), fileext = path.extname(filepath); 
+    var filepath = (req.url == '/' ? "app/views/home.html" : req.url), fileext = path.extname(filepath); 
 
     fs.exists(filepath, function (f) {
         if (f) {
@@ -36,44 +35,6 @@ var app = http.createServer(function (req, res) {
     });
 }).listen(1337);
 
-function contentType(ext) {
-    var ct;
-
-    switch (ext) {
-    case '.html':
-        ct = 'text/html';
-        break;
-    case '.css':
-        ct = 'text/css';
-        break;
-    case '.js':
-        ct = 'text/javascript';
-        break;
-    case '.png':
-        ct = 'image/png';
-        break;
-    case '.jpg':
-        ct = 'image/jpg';
-        break;
-    case '.svg':
-        ct = 'image/svg+xml';
-        break;
-    case '.mp4':
-        ct = 'video/mp4';
-        break;
-    case '.ogv':
-        ct = 'video/ogv';
-        break;
-    case '.webm':
-        ct = 'video/webm';
-        break;
-    default:
-        ct = 'text/plain';
-        break;
-    }
-
-    return {'Content-Type': ct};
-}
 
 
 /*************** SOCKET.IO ***************/
@@ -83,21 +44,11 @@ io = io.listen(app);
 // fonction timer
 var timerSong;
 
-var pv = 50;
 
 // liste des utilisateur et rooms
 var usernames = new Array();
 var rooms = new Array();
 
-//Points de vie des boss associés aux instances crées
-var boss = new Array ();
-
-// info musique
-var numTrack;
-var listMusiqueUrl = "";
-var listMusiqueTitle = "";
-var listMusiqueArtist = "";
-var listMusiqueCover = "";
 
 // compteur
 var numRoom = 1;
@@ -107,7 +58,8 @@ io.sockets.on('connection', function (socket) {
   
   //console.log(socket);
   socket.on('login',function(user){
-  	//console.log(user);
+  	console.log(user);
+    console.log("****************");
   	usernames.push(user.username);
   	socket.broadcast.emit('newLog',user.username);
   })
@@ -148,17 +100,15 @@ io.sockets.on('connection', function (socket) {
                 socket.join(room);
                 socket.room = room;
                 socket.numUser = numUser;
-
                 usernames[socket.numUser] = {
                     id : numUser,
                     user : nom,
                     point : 0,
                     room : rooms[room].id
                 };
+                console.log(rooms[socket.room].pvBoss);
+                socket.emit('newLife', rooms[socket.room].pvBoss);
                 socket.emit('roomRejoin');
-                console.log(rooms[socket.numRoom].pvBoss);
-                socket.emit('newLife', rooms[socket.numRoom].pvBoss);
-                
                 socket.broadcast.to(socket.room).emit('refreshScrore');
                 numUser++;
             }else{
@@ -170,58 +120,58 @@ io.sockets.on('connection', function (socket) {
                 socket.emit('accueilLocation');
         }
     });
+    // Envoie des infos de partie
+    // envoie des infos de la partie à l'urilisateur
+    socket.on('refreshScrore', function () {
+            socket.emit('afficherJoueur', usernames, socket.room, socket.numUser);
+    });
 
-  socket.on("hit", function(){
-  	  if(rooms[socket.numRoom].pvBoss <= 0)
-  	{
-  		
-      io.sockets.emit('ended',200);
-  	}
-  	{
-      console.log(rooms[socket.numRoom].pvBoss);
-  	  rooms[socket.numRoom].pvBoss--;
-  	}
-  	  
-      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
-  });
-  socket.on("hit2", function(){
-      if( rooms[socket.numRoom].pvBoss <= 0)
+    // Deconnection
+    socket.on('disconnect', function () {
+            if (socket.numUser != undefined) {
+                    socket.join("accueil");
+                    delete usernames[socket.numUser];
+                    socket.numUser = undefined;
+                    socket.broadcast.to(socket.room).emit('refreshScrore');
+            }
+            if (socket.numRoom != undefined) {
+                console.log('/////////////////////////////////////');
+                console.log('///// Une partie à été terminée /////');
+                console.log('/////////////////////////////////////');
+                    clearInterval(timerSong);
+                    socket.join("accueil");
+                    io.sockets.to(socket.room).emit('accueilLocation');
+                    io.sockets.to('accueil').emit('afficherLesRoomsExistante', rooms);
+                    delete rooms[socket.numRoom];
+                    socket.numRoom = undefined
+            }
+    });
+
+
+   socket.on("Atk", function(titleAtk){
+  console.log(rooms[socket.room]);
+      if(rooms[socket.room].pvBoss <= 0)
     {
-      
-      io.sockets.emit('ended',200);
+      io.sockets.to(socket.room).emit('accueilLocation');
+    
     }
     {
-      rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 2;
+      switch(titleAtk)
+      {
+        case "hit" : rooms[socket.room].pvBoss--; break;
+        case "hit2": rooms[socket.room].pvBoss = rooms[socket.room].pvBoss - 2; break;
+        case "hit3": if(rooms[socket.room].pvBoss == 20)
+                      {
+                        rooms[socket.room].pvBoss = rooms[socket.room].pvBoss - 20;
+                      };
+                      break;
+        case "hit4": rooms[socket.room].pvBoss = rooms[socket.room].pvBoss - 50; break;
+      }
+      
     }
-      
-      
-     io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
-  });
-  socket.on("hit3", function(){
-      if(rooms[socket.numRoom].pvBoss <= 0)
-    {
-      io.sockets.emit('ended',200);
-    }
-      else
-        if(rooms[socket.numRoom].pvBoss == 20)
-    {
-      rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 20;
-    }
-      
-      
-      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
-  });
-  socket.on("hit4", function(){
-      if(rooms[socket.numRoom].pvBoss <= 0)
-    {
-      io.sockets.emit('ended',200);
-    }
-    {
-     rooms[socket.numRoom].pvBoss = rooms[socket.numRoom].pvBoss - 50;
-    }
-      
-      
-      io.sockets.to(socket.room).emit('newLife', rooms[socket.numRoom].pvBoss);
+    io.sockets.to(socket.room).emit('newLife', rooms[socket.room].pvBoss);
+    socket.broadcast.to('accueil').emit('afficherLesRoomsExistante', rooms);
+
   });
 
 
